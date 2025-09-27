@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 import numpy as np
 import pandas as pd
 import pickle
+import os  # For port
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -35,7 +36,6 @@ def helper(dis):
     wrkout = workout[workout['disease'] == dis]['workout']
 
     return desc, pre, med, die, wrkout
-
 
 # ================================
 # Symptoms and Diseases Dictionary
@@ -113,7 +113,10 @@ def predict():
         message = "⚠️ Please enter symptoms separated by commas."
         return render_template('index.html', message=message)
 
-    user_symptoms = [s.strip() for s in symptoms.split(',')]
+    # ===== Normalize input for consistent predictions across devices =====
+    symptoms = symptoms.replace("，", ",")  # Replace any non-standard commas
+    user_symptoms = [s.strip().lower() for s in symptoms.split(',') if s.strip() != ""]
+
     predicted_disease = get_predicted_value(user_symptoms)
     dis_des, pre, meds, rec_diet, wrkout = helper(predicted_disease)
 
@@ -127,10 +130,6 @@ def predict():
                            my_diet=rec_diet,
                            workout=wrkout)
 
-import os  # Add this at the top if not already imported
-
-
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))  # Render default port
     app.run(host='0.0.0.0', port=port)
-
