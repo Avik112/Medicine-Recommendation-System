@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AGMED - Medicine Recommendation System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("{{ url_for('static', filename='back.png') }}") no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+    }
+
+    .overlay {
+      background-color: rgba(255, 255, 255, 0.85);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .header img {
+      width: 80px;
+      height: auto;
+    }
+
+    .header h1 {
+      margin: 10px 0 0;
+      color: #006666;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .form-section {
+      text-align: center;
+      margin: 30px auto;
+      padding: 20px;
+      max-width: 600px;
+      background: #f9ffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-section label {
+      font-size: 18px;
+      font-weight: bold;
+      color: #004d4d;
+    }
+
+    .form-section input[type=text] {
+      width: 80%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .form-section button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background: #009999;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .form-section button:hover {
+      background: #007777;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: red;
+      font-weight: bold;
+    }
+
+    .results {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section h3 {
+      color: #006666;
+      margin-bottom: 8px;
+      border-bottom: 2px solid #009999;
+      display: inline-block;
+      padding-bottom: 3px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      background: #e6f7f7;
+      margin: 5px 0;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <!-- Header -->
+    <div class="header">
+      <img src="{{ url_for('static', filename='img.png') }}" alt="AGMED Logo">
+      <h1>AGMED - Medicine Recommendation System</h1>
+    </div>
+
+    <!-- Input Form -->
+    <div class="form-section">
+      <form method="POST" action="/predict">
+        <label for="symptoms">Enter Symptoms (comma separated):</label><br>
+        <input type="text" name="symptoms" placeholder="e.g. cough, fever, headache">
+        <br>
+        <button type="submit">Predict Disease</button>
+      </form>
+
+      {% if message %}
+        <p class="message">{{ message }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Results Section -->
+    {% if predicted_disease %}
+    <div class="results">
+      <div class="section">
+        <h3>Predicted Disease:</h3>
+        <p><b>{{ predicted_disease }}</b></p>
+      </div>
+
+      <div class="section">
+        <h3>Description:</h3>
+        <p>{{ dis_des }}</p>
+      </div>
+
+      <div class="section">
+        <h3>Precautions:</h3>
+        <ul>
+          {% for p in my_precautions %}
+            <li>{{ p }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>Medications:</h3>
+        <ul>
+          {% for m in medications %}
+            <li>{{ m }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>Recommended Diet:</h3>
+        <ul>
+          {% for d in my_diet %}
+            <li>{{ d }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>Workout:</h3>
+        <ul>
+          {% for w in workout %}
+            <li>{{ w }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
